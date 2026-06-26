@@ -3,1100 +3,610 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Трекер привычек</title>
+<title>Трекер · Даниил</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-  :root {
-    --bg: #0e0e0e;
-    --surface: #161616;
-    --surface2: #1e1e1e;
-    --border: #2a2a2a;
-    --border2: #333;
-    --text: #e8e8e8;
-    --text2: #888;
-    --text3: #555;
-    --accent: #c8a96e;
-    --accent-dim: rgba(200,169,110,0.12);
-    --accent-glow: rgba(200,169,110,0.06);
-    --green: #4caf7d;
-    --green-dim: rgba(76,175,125,0.15);
-    --red: #e05c5c;
-    --blue: #5b9bd5;
-    --blue-dim: rgba(91,155,213,0.15);
-    --purple: #9b7fd4;
-    --radius: 8px;
-    --radius-sm: 5px;
-  }
+:root {
+  --bg: #0e0e0f;
+  --s1: #161618;
+  --s2: #1d1d1f;
+  --b1: #252527;
+  --b2: #333336;
+  --t1: #e8e8e8;
+  --t2: #888;
+  --t3: #4a4a4d;
+  --gold: #c8a96e;
+  --gold-d: rgba(200,169,110,0.13);
+  --green: #4caf7d;
+  --green-d: rgba(76,175,125,0.14);
+  --blue: #5b9bd5;
+  --blue-d: rgba(91,155,213,0.14);
+  --red: #e05c5c;
+  --r: 7px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+.hdr{padding:22px 24px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hdr-l{display:flex;align-items:baseline;gap:10px;}
+.hdr-name{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:500;letter-spacing:.05em;color:var(--t1);}
+.hdr-sep{color:var(--b2);font-size:14px;}
+.hdr-month{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;}
+.nav{display:flex;gap:5px;}
+.nav button{width:28px;height:28px;border-radius:5px;background:var(--s1);border:1px solid var(--b1);color:var(--t2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.15s;}
+.nav button:hover{border-color:var(--gold);color:var(--gold);}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-  }
+/* TABS */
+.tabs{display:flex;padding:0 24px;border-bottom:1px solid var(--b1);}
+.tab{padding:12px 16px;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;}
+.tab:hover{color:var(--t2);}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold);}
 
-  /* HEADER */
-  .header {
-    padding: 28px 32px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .header-left { display: flex; align-items: baseline; gap: 12px; }
-  .header-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    color: var(--text);
-  }
-  .header-month {
-    font-size: 12px;
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .nav-btns { display: flex; gap: 6px; }
-  .nav-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text2);
-    width: 28px; height: 28px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-size: 13px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-  }
-  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+/* MAIN */
+.main{padding:20px 24px;max-width:1500px;}
+.page{display:none;}
+.page.on{display:block;}
 
-  /* TABS */
-  .tabs {
-    display: flex;
-    gap: 0;
-    padding: 0 32px;
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-  }
-  .tab {
-    padding: 14px 18px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--text3);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .tab:hover { color: var(--text2); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+/* SECTION */
+.sec{margin-bottom:28px;}
+.sec-lbl{font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;}
 
-  /* MAIN */
-  .main { padding: 24px 32px; max-width: 1400px; }
+/* GRID TABLE approach — label col + scrollable cells */
+.grid-wrap{display:flex;gap:0;}
+.grid-labels{flex-shrink:0;display:flex;flex-direction:column;gap:2px;margin-right:6px;}
+.grid-header-spacer{height:18px;}
+.row-lbl{height:30px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2);white-space:nowrap;padding-right:4px;}
+.row-lbl .ic{font-size:12px;}
 
-  /* SECTION */
-  .section { margin-bottom: 32px; }
-  .section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 12px;
-    padding-left: 2px;
-  }
+.grid-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.grid-scroll::-webkit-scrollbar{height:3px;}
+.grid-scroll::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
 
-  /* CALENDAR GRID */
-  .cal-wrap {
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .cal-labels {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-right: 8px;
-    position: sticky;
-    left: 0;
-    background: var(--bg);
-    z-index: 2;
-  }
-  .cal-scroll {
-    flex: 1;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(31, 30px);
-    gap: 2px;
-    min-width: fit-content;
-  }
-  .cal-corner {
-    height: 18px;
-    font-size: 10px;
-    color: var(--text3);
-    display: flex;
-    align-items: flex-end;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .cal-day-header {
-    text-align: center;
-    font-size: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text3);
-    padding-bottom: 4px;
-    line-height: 1;
-    height: 18px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .cal-day-header.today { color: var(--accent); }
-  .cal-row-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--text2);
-    height: 30px;
-    white-space: nowrap;
-    cursor: default;
-    min-width: 110px;
-  }
-  .cal-row-label .icon { font-size: 13px; opacity: 0.8; flex-shrink: 0; }
+.grid{display:flex;flex-direction:column;gap:2px;min-width:fit-content;}
+.grid-days{display:flex;gap:2px;margin-bottom:0;}
+.day-hdr{width:30px;height:18px;display:flex;align-items:flex-end;justify-content:center;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);padding-bottom:2px;}
+.day-hdr.today{color:var(--gold);}
+.grid-row{display:flex;gap:2px;}
 
-  /* CELLS */
-  .cal-cell {
-    width: 30px; height: 30px;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.12s;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text3);
-    position: relative;
-  }
-  .cal-cell:hover { border-color: var(--border2); }
-  .cal-cell.done {
-    background: var(--green-dim);
-    border-color: var(--green);
-    color: var(--green);
-  }
-  .cal-cell.done::after {
-    content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-  }
-  .cal-cell.empty {
-    background: transparent;
-    border-color: transparent;
-    cursor: default;
-    pointer-events: none;
-  }
-  .cal-cell.future {
-    opacity: 0.3;
-    cursor: default;
-    pointer-events: none;
-  }
+/* CELLS */
+.cell{width:30px;height:30px;border-radius:5px;background:var(--s1);border:1px solid var(--b1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--t3);transition:border-color .12s,background .12s;}
+.cell:hover{border-color:var(--b2);}
+.cell.off{background:transparent;border-color:transparent;pointer-events:none;opacity:.25;}
+.cell.done{background:var(--green-d);border-color:var(--green);}
+.cell.done::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);}
+.cell.blue{background:var(--blue-d);border-color:var(--blue);color:var(--blue);}
+.cell.green-txt{background:var(--green-d);border-color:var(--green);color:var(--green);}
+.cell.gold{background:var(--gold-d);border-color:var(--gold);color:var(--gold);}
+.cell.red{background:rgba(224,92,92,.12);border-color:var(--red);color:var(--red);}
+.cell.amber{background:rgba(200,169,110,.1);border-color:var(--gold);color:var(--gold);}
 
-  /* SLEEP */
-  .sleep-cell {
-    width: 30px; height: 30px;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text3);
-    transition: all 0.12s;
-    position: relative;
-  }
-  .sleep-cell:hover { border-color: var(--border2); }
-  .sleep-cell.filled {
-    background: var(--blue-dim);
-    border-color: var(--blue);
-    color: var(--blue);
-    font-size: 8px;
-  }
-  .sleep-cell.good {
-    background: rgba(76,175,125,0.12);
-    border-color: var(--green);
-    color: var(--green);
-  }
+/* WATER dots */
+.wdots{display:flex;flex-wrap:wrap;gap:1px;justify-content:center;width:20px;}
+.wd{width:4px;height:4px;border-radius:50%;background:var(--b2);}
+.wd.on{background:var(--blue);}
 
-  /* WATER */
-  .water-cell {
-    width: 30px; height: 30px;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 1px;
-    transition: all 0.12s;
-  }
-  .water-cell:hover { border-color: var(--border2); }
-  .water-dots {
-    display: flex; flex-wrap: wrap;
-    gap: 1px; justify-content: center;
-    width: 18px;
-  }
-  .water-dot {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--border2);
-    transition: background 0.1s;
-  }
-  .water-dot.filled { background: var(--blue); }
+/* MOOD emoji cell */
+.cell.mood-set{background:var(--s2);border-color:var(--b2);font-size:14px;}
 
-  /* PAGES */
-  .pages-cell {
-    width: 30px; height: 30px;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text3);
-    transition: all 0.12s;
-  }
-  .pages-cell:hover { border-color: var(--border2); }
-  .pages-cell.filled {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.on{opacity:1;pointer-events:all;}
+.modal{background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:22px;width:310px;max-width:92vw;transform:translateY(6px);transition:transform .2s;}
+.overlay.on .modal{transform:translateY(0);}
+.m-title{font-size:13px;font-weight:600;margin-bottom:3px;}
+.m-sub{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:18px;}
+.m-lbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:5px;}
+.m-input{width:100%;background:var(--s1);border:1px solid var(--b2);border-radius:5px;padding:8px 11px;color:var(--t1);font-size:13px;font-family:'JetBrains Mono',monospace;outline:none;transition:border-color .15s;margin-bottom:12px;}
+.m-input:focus{border-color:var(--gold);}
+textarea.m-input{resize:vertical;min-height:80px;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;}
+.m-btns{display:flex;gap:7px;margin-top:6px;}
+.btn{flex:1;padding:9px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:.15s;}
+.btn-p{background:var(--gold);color:#0e0e0f;}
+.btn-p:hover{filter:brightness(1.1);}
+.btn-s{background:var(--s1);border:1px solid var(--b2);color:var(--t2);}
+.btn-s:hover{color:var(--t1);}
+.btn-d{background:transparent;border:1px solid var(--red);color:var(--red);}
+.btn-d:hover{background:rgba(224,92,92,.1);}
 
-  /* SCREEN */
-  .screen-cell {
-    width: 30px; height: 30px;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text3);
-    transition: all 0.12s;
-  }
-  .screen-cell:hover { border-color: var(--border2); }
-  .screen-cell.low { background: var(--green-dim); border-color: var(--green); color: var(--green); }
-  .screen-cell.mid { background: rgba(200,169,110,0.1); border-color: var(--accent); color: var(--accent); }
-  .screen-cell.high { background: rgba(224,92,92,0.12); border-color: var(--red); color: var(--red); }
+/* MOOD PICKER */
+.mood-pick{display:flex;gap:7px;justify-content:center;margin:4px 0 14px;}
+.mp{width:42px;height:42px;border-radius:7px;background:var(--s1);border:2px solid var(--b1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:.12s;}
+.mp:hover,.mp.on{border-color:var(--gold);background:var(--gold-d);}
 
-  /* MOOD */
-  .mood-cell {
-    width: 30px; height: 30px;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-    transition: all 0.12s;
-  }
-  .mood-cell:hover { border-color: var(--border2); }
+/* WATER PICKER */
+.wpick{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin:4px 0 14px;}
+.wp{width:34px;height:34px;border-radius:5px;background:var(--s1);border:1px solid var(--b1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--t3);transition:.12s;}
+.wp:hover,.wp.on{border-color:var(--blue);color:var(--blue);}
 
-  /* MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 100;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.2s;
-  }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal {
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: 12px;
-    padding: 24px;
-    width: 320px;
-    max-width: 90vw;
-    transform: translateY(8px);
-    transition: transform 0.2s;
-  }
-  .modal-overlay.open .modal { transform: translateY(0); }
-  .modal-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .modal-sub {
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 20px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .modal-field { margin-bottom: 14px; }
-  .modal-field label {
-    display: block;
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 6px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-  .modal-input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 9px 12px;
-    color: var(--text);
-    font-size: 13px;
-    font-family: 'JetBrains Mono', monospace;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .modal-input:focus { border-color: var(--accent); }
-  .modal-btns { display: flex; gap: 8px; margin-top: 20px; }
-  .btn {
-    flex: 1; padding: 9px;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    letter-spacing: 0.04em;
-    transition: all 0.15s;
-  }
-  .btn-primary { background: var(--accent); color: #0e0e0e; }
-  .btn-primary:hover { filter: brightness(1.1); }
-  .btn-secondary { background: var(--surface); border: 1px solid var(--border2); color: var(--text2); }
-  .btn-secondary:hover { border-color: var(--text2); color: var(--text); }
-  .btn-danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
-  .btn-danger:hover { background: rgba(224,92,92,0.1); }
+/* SUMMARY */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:24px;}
+.sc{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:16px 18px;}
+.sc-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;}
+.sc-val{font-size:26px;font-weight:500;font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:3px;}
+.sc-val .u{font-size:12px;color:var(--t3);font-weight:400;}
+.sc-sub{font-size:11px;color:var(--t3);}
+.sc-bar{height:2px;background:var(--b1);border-radius:2px;margin-top:11px;overflow:hidden;}
+.sc-fill{height:100%;border-radius:2px;background:var(--gold);transition:width .5s;}
 
-  /* MOOD PICKER */
-  .mood-picker {
-    display: flex; gap: 8px; justify-content: center;
-    margin: 8px 0;
-  }
-  .mood-opt {
-    width: 44px; height: 44px;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    transition: all 0.12s;
-  }
-  .mood-opt:hover, .mood-opt.selected { border-color: var(--accent); background: var(--accent-dim); }
-
-  /* WATER PICKER */
-  .water-picker {
-    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
-  }
-  .water-opt {
-    width: 36px; height: 36px;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    font-size: 9px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text3);
-    transition: all 0.12s;
-    gap: 2px;
-  }
-  .water-opt span { font-size: 13px; }
-  .water-opt:hover { border-color: var(--blue); color: var(--blue); }
-  .water-opt.selected { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
-
-  /* SUMMARY TAB */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-  }
-  .stat-card-label {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 8px;
-  }
-  .stat-card-value {
-    font-size: 28px;
-    font-weight: 500;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .stat-card-value .unit {
-    font-size: 13px;
-    color: var(--text3);
-    font-weight: 400;
-  }
-  .stat-card-sub {
-    font-size: 11px;
-    color: var(--text3);
-  }
-  .stat-bar {
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-top: 12px;
-    overflow: hidden;
-  }
-  .stat-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: var(--accent);
-    transition: width 0.5s ease;
-  }
-
-  /* EXPORT */
-  .export-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-  }
-  .export-label {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 12px;
-  }
-  .export-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text2);
-    line-height: 1.8;
-    white-space: pre-wrap;
-    max-height: 280px;
-    overflow-y: auto;
-  }
-  .export-btn {
-    margin-top: 14px;
-    padding: 9px 18px;
-    background: var(--accent);
-    color: #0e0e0e;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: filter 0.15s;
-  }
-  .export-btn:hover { filter: brightness(1.1); }
-
-  /* PAGE */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-  @media (max-width: 600px) {
-    .header { padding: 20px 16px 16px; }
-    .tabs { padding: 0 16px; }
-    .main { padding: 20px 16px; }
-  }
+.export-box{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:18px;}
+.export-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;}
+.export-txt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t2);line-height:1.8;white-space:pre-wrap;max-height:260px;overflow-y:auto;}
+.export-btn{margin-top:12px;padding:8px 16px;background:var(--gold);color:#0e0e0f;border:none;border-radius:5px;font-size:12px;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:filter .15s;}
+.export-btn:hover{filter:brightness(1.1);}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <span class="header-title">HABIT</span>
-    <span class="header-month" id="monthLabel"></span>
+<div class="hdr">
+  <div class="hdr-l">
+    <span class="hdr-name">ДАНИИЛ</span>
+    <span class="hdr-sep">/</span>
+    <span class="hdr-month" id="mLabel"></span>
   </div>
-  <div class="nav-btns">
-    <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
-    <button class="nav-btn" onclick="changeMonth(1)">›</button>
+  <div class="nav">
+    <button onclick="goMonth(-1)">‹</button>
+    <button onclick="goMonth(1)">›</button>
   </div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="showPage('tracker', this)">Трекер</div>
-  <div class="tab" onclick="showPage('summary', this)">Итоги</div>
+  <div class="tab on" onclick="showTab('tracker',this)">Трекер</div>
+  <div class="tab" onclick="showTab('summary',this)">Итоги</div>
 </div>
 
 <div class="main">
 
-  <!-- TRACKER PAGE -->
-  <div class="page active" id="page-tracker">
-
-    <!-- SLEEP -->
-    <div class="section">
-      <div class="section-label">Сон</div>
-      <div class="cal-wrap">
-        <div class="cal-labels" id="labels-sleep"></div>
-        <div class="cal-scroll"><div class="cal-grid" id="grid-sleep"></div></div>
+  <div class="page on" id="page-tracker">
+    <div class="sec"><div class="sec-lbl">Сон</div>
+      <div class="grid-wrap">
+        <div class="grid-labels" id="lbl-sleep"></div>
+        <div class="grid-scroll"><div class="grid" id="g-sleep"></div></div>
       </div>
     </div>
-
-    <!-- SIMPLE HABITS -->
-    <div class="section">
-      <div class="section-label">Ежедневные привычки</div>
-      <div class="cal-wrap">
-        <div class="cal-labels" id="labels-habits"></div>
-        <div class="cal-scroll"><div class="cal-grid" id="grid-habits"></div></div>
+    <div class="sec"><div class="sec-lbl">Ежедневные привычки</div>
+      <div class="grid-wrap">
+        <div class="grid-labels" id="lbl-habits"></div>
+        <div class="grid-scroll"><div class="grid" id="g-habits"></div></div>
       </div>
     </div>
-
-    <!-- WATER -->
-    <div class="section">
-      <div class="section-label">Водный баланс</div>
-      <div class="cal-wrap">
-        <div class="cal-labels" id="labels-water"></div>
-        <div class="cal-scroll"><div class="cal-grid" id="grid-water"></div></div>
+    <div class="sec"><div class="sec-lbl">Водный баланс</div>
+      <div class="grid-wrap">
+        <div class="grid-labels" id="lbl-water"></div>
+        <div class="grid-scroll"><div class="grid" id="g-water"></div></div>
       </div>
     </div>
-
-    <!-- PAGES -->
-    <div class="section">
-      <div class="section-label">Чтение · страниц</div>
-      <div class="cal-wrap">
-        <div class="cal-labels" id="labels-pages"></div>
-        <div class="cal-scroll"><div class="cal-grid" id="grid-pages"></div></div>
+    <div class="sec"><div class="sec-lbl">Чтение</div>
+      <div class="grid-wrap">
+        <div class="grid-labels" id="lbl-pages"></div>
+        <div class="grid-scroll"><div class="grid" id="g-pages"></div></div>
       </div>
     </div>
-
-    <!-- SCREEN -->
-    <div class="section">
-      <div class="section-label">Экранное время</div>
-      <div class="cal-wrap">
-        <div class="cal-labels" id="labels-screen"></div>
-        <div class="cal-scroll"><div class="cal-grid" id="grid-screen"></div></div>
+    <div class="sec"><div class="sec-lbl">Экранное время</div>
+      <div class="grid-wrap">
+        <div class="grid-labels" id="lbl-screen"></div>
+        <div class="grid-scroll"><div class="grid" id="g-screen"></div></div>
       </div>
     </div>
-
-    <!-- MOOD -->
-    <div class="section">
-      <div class="section-label">Настроение</div>
-      <div class="cal-wrap">
-        <div class="cal-labels" id="labels-mood"></div>
-        <div class="cal-scroll"><div class="cal-grid" id="grid-mood"></div></div>
+    <div class="sec"><div class="sec-lbl">Дневник дня</div>
+      <div class="grid-wrap">
+        <div class="grid-labels" id="lbl-diary"></div>
+        <div class="grid-scroll"><div class="grid" id="g-diary"></div></div>
       </div>
-    </div>
-
-  </div><!-- /tracker -->
-
-  <!-- SUMMARY PAGE -->
-  <div class="page" id="page-summary">
-    <div class="stats-grid" id="statsGrid"></div>
-    <div class="export-box">
-      <div class="export-label">Экспорт для нейросети</div>
-      <div class="export-text" id="exportText"></div>
-      <button class="export-btn" onclick="copyExport()">Скопировать отчёт</button>
     </div>
   </div>
 
-</div><!-- /main -->
+  <div class="page" id="page-summary">
+    <div class="stats" id="statsGrid"></div>
+    <div class="export-box">
+      <div class="export-lbl">Отчёт для нейросети</div>
+      <div class="export-txt" id="exportTxt"></div>
+      <button class="export-btn" onclick="copyExport()">Скопировать</button>
+    </div>
+  </div>
+
+</div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modal" onclick="closeModalIfOutside(event)">
-  <div class="modal" id="modalBox">
-    <div class="modal-title" id="modalTitle"></div>
-    <div class="modal-sub" id="modalSub"></div>
-    <div id="modalBody"></div>
-    <div class="modal-btns">
-      <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
-      <button class="btn btn-danger" id="btnClear" onclick="clearEntry()" style="display:none">Очистить</button>
-      <button class="btn btn-primary" id="btnSave" onclick="saveEntry()">Сохранить</button>
+<div class="overlay" id="overlay" onclick="outsideClose(event)">
+  <div class="modal">
+    <div class="m-title" id="mTitle"></div>
+    <div class="m-sub" id="mSub"></div>
+    <div id="mBody"></div>
+    <div class="m-btns">
+      <button class="btn btn-s" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-d" id="btnDel" onclick="delEntry()" style="display:none">Удалить</button>
+      <button class="btn btn-p" onclick="saveEntry()">Сохранить</button>
     </div>
   </div>
 </div>
 
 <script>
-// ─── STATE ────────────────────────────────────────────────────────────────────
-const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь',
-                   'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-const DAYS_SHORT = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-
-let viewYear, viewMonth;
-
-const habits = [
-  { id:'charge',    icon:'⚡', label:'Зарядка' },
-  { id:'sober',     icon:'🚫', label:'Трезвость' },
-  { id:'workout',   icon:'🏋️', label:'Тренировка' },
-  { id:'meditate',  icon:'🧘', label:'Медитация' },
-  { id:'journal',   icon:'✏️', label:'Дневник' },
+const MO = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const HABITS = [
+  {id:'charge',  ic:'⚡', lbl:'Зарядка'},
+  {id:'sober',   ic:'🚫', lbl:'Трезвость'},
+  {id:'workout', ic:'🏋️', lbl:'Тренировка'},
+  {id:'meditate',ic:'🧘', lbl:'Медитация'},
 ];
+const MOODS = ['😞','😕','😐','🙂','😊'];
 
-function storageKey(year, month) {
-  return `habit_${year}_${month}`;
-}
-function loadData(year, month) {
-  try { return JSON.parse(localStorage.getItem(storageKey(year, month))) || {}; }
-  catch { return {}; }
-}
-function saveData(year, month, data) {
-  localStorage.setItem(storageKey(year, month), JSON.stringify(data));
-}
+let yr, mo, D = {}, ctx = null;
 
-let data = {};
-let modalContext = null;
+function key(y,m){return `h_${y}_${m}`;}
+function load(){try{return JSON.parse(localStorage.getItem(key(yr,mo)))||{};}catch{return{};}}
+function save(){localStorage.setItem(key(yr,mo),JSON.stringify(D));}
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-function init() {
-  const now = new Date();
-  viewYear = now.getFullYear();
-  viewMonth = now.getMonth();
-  render();
+function init(){const n=new Date();yr=n.getFullYear();mo=n.getMonth();render();}
+function goMonth(d){mo+=d;if(mo>11){mo=0;yr++;}if(mo<0){mo=11;yr--;}render();}
+
+function showTab(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('on');
+  el.classList.add('on');
+  if(name==='summary')renderSummary();
 }
 
-function changeMonth(dir) {
-  viewMonth += dir;
-  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-  if (viewMonth < 0)  { viewMonth = 11; viewYear--; }
-  render();
-}
+function render(){
+  D=load();
+  const n=new Date();
+  const today=n.getDate();
+  const isCur=yr===n.getFullYear()&&mo===n.getMonth();
+  const dim=new Date(yr,mo+1,0).getDate();
+  document.getElementById('mLabel').textContent=MO[mo]+' '+yr;
 
-function showPage(name, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  el.classList.add('active');
-  if (name === 'summary') renderSummary();
-}
-
-// ─── RENDER ───────────────────────────────────────────────────────────────────
-function render() {
-  data = loadData(viewYear, viewMonth);
-  const now = new Date();
-  const today = now.getDate();
-  const isCurrentMonth = (viewYear === now.getFullYear() && viewMonth === now.getMonth());
-
-  document.getElementById('monthLabel').textContent =
-    MONTHS_RU[viewMonth] + ' ' + viewYear;
-
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-  // Day of week for day 1 (0=Sun..6=Sat), convert to Mon-based
-  const firstDOW = (new Date(viewYear, viewMonth, 1).getDay() + 6) % 7;
-
-  function dayHeaders() {
-    const headers = [];
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dow = (new Date(viewYear, viewMonth, d).getDay() + 6) % 7;
-      const isToday = isCurrentMonth && d === today;
-      headers.push(`<div class="cal-day-header${isToday?' today':''}">${d}</div>`);
+  function dayRow(){
+    let h='<div class="grid-days">';
+    for(let d=1;d<=dim;d++){
+      const t=isCur&&d===today?' today':'';
+      h+=`<div class="day-hdr${t}">${d}</div>`;
     }
-    return headers.join('');
+    return h+'</div>';
   }
-
-  function isFuture(d) {
-    return isCurrentMonth && d > today;
-  }
+  function fut(d){return isCur&&d>today;}
 
   // ── SLEEP ──
-  const sleepEl = document.getElementById('grid-sleep');
-  let html = `<div class="cal-corner">сон</div>${dayHeaders()}`;
-  // row: засыпание
-  html += `<div class="cal-row-label"><span class="icon">🌙</span>засыпание</div>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const val = data[`sleep_down_${d}`];
-    const cls = val ? 'filled' : '';
-    const fut = isFuture(d) ? ' future' : '';
-    html += `<div class="sleep-cell ${cls}${fut}" onclick="openSleep(${d},'down')">${val || ''}</div>`;
+  document.getElementById('lbl-sleep').innerHTML=
+    `<div class="grid-header-spacer"></div>
+     <div class="row-lbl"><span class="ic">🌙</span>засыпание</div>
+     <div class="row-lbl"><span class="ic">☀️</span>подъём</div>
+     <div class="row-lbl"><span class="ic">⏱</span>часов</div>`;
+
+  let g=dayRow();
+  // down
+  g+='<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const v=D[`sd_${d}`]||'';
+    const f=fut(d)?' off':'';
+    g+=`<div class="cell ${v?'blue':''}${f}" onclick="openSleep(${d},'down')">${v}</div>`;
   }
-  // row: пробуждение
-  html += `<div class="cal-row-label"><span class="icon">☀️</span>подъём</div>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const val = data[`sleep_up_${d}`];
-    const downVal = data[`sleep_down_${d}`];
-    const cls = val ? (getSleepHours(downVal, val) >= 7 ? 'good' : 'filled') : '';
-    const fut = isFuture(d) ? ' future' : '';
-    html += `<div class="sleep-cell ${cls}${fut}" onclick="openSleep(${d},'up')">${val || ''}</div>`;
+  g+='</div>';
+  // up
+  g+='<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const v=D[`su_${d}`]||'';
+    const h=sleepH(D[`sd_${d}`],v);
+    const cl=v?(h>=7?'green-txt':'blue'):'';
+    const f=fut(d)?' off':'';
+    g+=`<div class="cell ${cl}${f}" onclick="openSleep(${d},'up')">${v}</div>`;
   }
-  // row: итого ч
-  html += `<div class="cal-row-label"><span class="icon">⏱</span>часов</div>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const up = data[`sleep_up_${d}`]; const down = data[`sleep_down_${d}`];
-    const h = getSleepHours(down, up);
-    const cls = h >= 7 ? 'good' : (h > 0 ? 'filled' : '');
-    const fut = isFuture(d) ? ' future' : '';
-    html += `<div class="sleep-cell ${cls}${fut}">${h > 0 ? h+'ч' : ''}</div>`;
+  g+='</div>';
+  // hours
+  g+='<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const h=sleepH(D[`sd_${d}`],D[`su_${d}`]);
+    const cl=h>=7?'green-txt':h>0?'blue':'';
+    const f=fut(d)?' off':'';
+    g+=`<div class="cell ${cl}${f}">${h>0?h+'ч':''}</div>`;
   }
-  sleepEl.innerHTML = html;
+  g+='</div>';
+  document.getElementById('g-sleep').innerHTML=g;
 
   // ── HABITS ──
-  const habitsEl = document.getElementById('grid-habits');
-  html = `<div class="cal-corner">привычка</div>${dayHeaders()}`;
-  habits.forEach(h => {
-    html += `<div class="cal-row-label"><span class="icon">${h.icon}</span>${h.label}</div>`;
-    for (let d = 1; d <= daysInMonth; d++) {
-      const done = data[`${h.id}_${d}`];
-      const fut = isFuture(d) ? ' future' : '';
-      html += `<div class="cal-cell ${done?'done':''}${fut}" onclick="toggleHabit('${h.id}',${d})"></div>`;
+  let lblH='<div class="grid-header-spacer"></div>';
+  HABITS.forEach(h=>{ lblH+=`<div class="row-lbl"><span class="ic">${h.ic}</span>${h.lbl}</div>`; });
+  document.getElementById('lbl-habits').innerHTML=lblH;
+  g=dayRow();
+  HABITS.forEach(h=>{
+    g+='<div class="grid-row">';
+    for(let d=1;d<=dim;d++){
+      const f=fut(d)?' off':'';
+      g+=`<div class="cell ${D[`${h.id}_${d}`]?'done':''}${f}" onclick="tog('${h.id}',${d})"></div>`;
     }
+    g+='</div>';
   });
-  habitsEl.innerHTML = html;
+  document.getElementById('g-habits').innerHTML=g;
 
   // ── WATER ──
-  const waterEl = document.getElementById('grid-water');
-  html = `<div class="cal-corner">вода</div>${dayHeaders()}`;
-  html += `<div class="cal-row-label"><span class="icon">💧</span>стаканы</div>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const count = data[`water_${d}`] || 0;
-    const fut = isFuture(d) ? ' future' : '';
-    let dots = '';
-    for (let i = 1; i <= 8; i++) dots += `<div class="water-dot ${i<=count?'filled':''}"></div>`;
-    html += `<div class="water-cell${fut?' future':''}" onclick="openWater(${d})"><div class="water-dots">${dots}</div></div>`;
+  document.getElementById('lbl-water').innerHTML=
+    `<div class="grid-header-spacer"></div>
+     <div class="row-lbl"><span class="ic">💧</span>стаканы</div>`;
+  g=dayRow()+'<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const c=D[`w_${d}`]||0;
+    const f=fut(d)?' off':'';
+    let dots='<div class="wdots">';
+    for(let i=1;i<=8;i++) dots+=`<div class="wd${i<=c?' on':''}"></div>`;
+    dots+='</div>';
+    g+=`<div class="cell${f}" onclick="openWater(${d})" style="background:var(--s1);border:1px solid var(--b1);">${dots}</div>`;
   }
-  waterEl.innerHTML = html;
+  g+='</div>';
+  document.getElementById('g-water').innerHTML=g;
 
   // ── PAGES ──
-  const pagesEl = document.getElementById('grid-pages');
-  html = `<div class="cal-corner">чтение</div>${dayHeaders()}`;
-  html += `<div class="cal-row-label"><span class="icon">📖</span>страниц</div>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const val = data[`pages_${d}`];
-    const cls = val ? 'filled' : '';
-    const fut = isFuture(d) ? ' future' : '';
-    html += `<div class="pages-cell ${cls}${fut}" onclick="openPages(${d})">${val || ''}</div>`;
+  document.getElementById('lbl-pages').innerHTML=
+    `<div class="grid-header-spacer"></div>
+     <div class="row-lbl"><span class="ic">📖</span>страниц</div>`;
+  g=dayRow()+'<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const v=D[`p_${d}`]||'';
+    const f=fut(d)?' off':'';
+    g+=`<div class="cell ${v?'gold':''}${f}" onclick="openPages(${d})">${v}</div>`;
   }
-  pagesEl.innerHTML = html;
+  g+='</div>';
+  document.getElementById('g-pages').innerHTML=g;
 
   // ── SCREEN ──
-  const screenEl = document.getElementById('grid-screen');
-  html = `<div class="cal-corner">экран</div>${dayHeaders()}`;
-  html += `<div class="cal-row-label"><span class="icon">📱</span>ч:мм</div>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const val = data[`screen_${d}`];
-    const fut = isFuture(d) ? ' future' : '';
-    let cls = '';
-    if (val) {
-      const mins = parseTimeMins(val);
-      cls = mins <= 120 ? 'low' : mins <= 240 ? 'mid' : 'high';
-    }
-    html += `<div class="screen-cell ${cls}${fut}" onclick="openScreen(${d})">${val || ''}</div>`;
+  document.getElementById('lbl-screen').innerHTML=
+    `<div class="grid-header-spacer"></div>
+     <div class="row-lbl"><span class="ic">📱</span>ч:мм</div>`;
+  g=dayRow()+'<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const v=D[`sc_${d}`]||'';
+    const f=fut(d)?' off':'';
+    let cl='';
+    if(v){const m=toMins(v);cl=m<=120?'green-txt':m<=240?'amber':'red';}
+    g+=`<div class="cell ${cl}${f}" onclick="openScreen(${d})">${v}</div>`;
   }
-  screenEl.innerHTML = html;
+  g+='</div>';
+  document.getElementById('g-screen').innerHTML=g;
 
-  // ── MOOD ──
-  const moodEl = document.getElementById('grid-mood');
-  html = `<div class="cal-corner">настроение</div>${dayHeaders()}`;
-  html += `<div class="cal-row-label"><span class="icon">🎭</span>день</div>`;
-  const moods = ['😞','😕','😐','🙂','😊'];
-  for (let d = 1; d <= daysInMonth; d++) {
-    const val = data[`mood_${d}`];
-    const fut = isFuture(d) ? ' future' : '';
-    html += `<div class="mood-cell${fut?' future':''}" onclick="openMood(${d})">${val || ''}</div>`;
+  // ── DIARY ──
+  document.getElementById('lbl-diary').innerHTML=
+    `<div class="grid-header-spacer"></div>
+     <div class="row-lbl"><span class="ic">🎭</span>настроение</div>
+     <div class="row-lbl"><span class="ic">✏️</span>запись</div>`;
+  g=dayRow();
+  // mood row
+  g+='<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const v=D[`dm_${d}`]||'';
+    const f=fut(d)?' off':'';
+    g+=`<div class="cell ${v?'mood-set':''}${f}" onclick="openDiary(${d})">${v}</div>`;
   }
-  moodEl.innerHTML = html;
-}
-
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function getSleepHours(down, up) {
-  if (!down || !up) return 0;
-  try {
-    const [dh,dm] = down.split(':').map(Number);
-    const [uh,um] = up.split(':').map(Number);
-    let mins = (uh*60+um) - (dh*60+dm);
-    if (mins < 0) mins += 24*60;
-    return Math.round(mins/60*10)/10;
-  } catch { return 0; }
-}
-function parseTimeMins(str) {
-  if (!str) return 0;
-  const parts = str.split(':');
-  if (parts.length === 2) return parseInt(parts[0])*60 + parseInt(parts[1]);
-  return parseInt(str)*60 || 0;
-}
-function daysInCurrentMonth() {
-  return new Date(viewYear, viewMonth+1, 0).getDate();
-}
-
-// ─── TOGGLE SIMPLE HABIT ──────────────────────────────────────────────────────
-function toggleHabit(id, day) {
-  data[`${id}_${day}`] = !data[`${id}_${day}`];
-  saveData(viewYear, viewMonth, data);
-  render();
-}
-
-// ─── MODALS ───────────────────────────────────────────────────────────────────
-function openModal(title, sub, bodyHtml, ctx, hasClear) {
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalSub').textContent = sub;
-  document.getElementById('modalBody').innerHTML = bodyHtml;
-  document.getElementById('btnClear').style.display = hasClear ? 'block' : 'none';
-  modalContext = ctx;
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  modalContext = null;
-}
-function closeModalIfOutside(e) {
-  if (e.target === document.getElementById('modal')) closeModal();
-}
-
-function openSleep(day, type) {
-  const key = `sleep_${type}_${day}`;
-  const val = data[key] || '';
-  const label = type === 'down' ? 'Время засыпания' : 'Время подъёма';
-  const hint = type === 'down' ? 'напр. 23:30' : 'напр. 07:15';
-  openModal(label, `${MONTHS_RU[viewMonth]}, ${day} число`,
-    `<div class="modal-field"><label>Время (чч:мм)</label>
-     <input class="modal-input" id="inp" type="time" value="${val}" placeholder="${hint}"></div>`,
-    { type:'sleep', key, day }, !!val);
-}
-
-function openWater(day) {
-  const count = data[`water_${day}`] || 0;
-  let opts = '';
-  for (let i=1; i<=8; i++) opts += `<div class="water-opt${count===i?' selected':''}" onclick="selectWaterOpt(${i})"><span>💧</span>${i}</div>`;
-  openModal('Вода', `${MONTHS_RU[viewMonth]}, ${day} число`,
-    `<div class="water-picker" id="waterPicker">${opts}</div>`,
-    { type:'water', day }, count > 0);
-}
-function selectWaterOpt(n) {
-  document.querySelectorAll('.water-opt').forEach((el,i) => {
-    el.classList.toggle('selected', i+1 === n);
-  });
-  modalContext.selected = n;
-}
-
-function openPages(day) {
-  const val = data[`pages_${day}`] || '';
-  openModal('Чтение', `${MONTHS_RU[viewMonth]}, ${day} число`,
-    `<div class="modal-field"><label>Страниц прочитано</label>
-     <input class="modal-input" id="inp" type="number" min="0" max="999" value="${val}" placeholder="0"></div>`,
-    { type:'pages', day }, !!val);
-}
-
-function openScreen(day) {
-  const val = data[`screen_${day}`] || '';
-  openModal('Экранное время', `${MONTHS_RU[viewMonth]}, ${day} число`,
-    `<div class="modal-field"><label>Время (чч:мм)</label>
-     <input class="modal-input" id="inp" type="text" value="${val}" placeholder="2:30"></div>`,
-    { type:'screen', day }, !!val);
-}
-
-function openMood(day) {
-  const moods = ['😞','😕','😐','🙂','😊'];
-  const val = data[`mood_${day}`] || '';
-  let opts = moods.map(m =>
-    `<div class="mood-opt${val===m?' selected':''}" onclick="selectMood('${m}',this)">${m}</div>`
-  ).join('');
-  openModal('Настроение', `${MONTHS_RU[viewMonth]}, ${day} число`,
-    `<div class="mood-picker">${opts}</div>`,
-    { type:'mood', day, selected: val }, !!val);
-}
-function selectMood(m, el) {
-  document.querySelectorAll('.mood-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  modalContext.selected = m;
-}
-
-function saveEntry() {
-  if (!modalContext) return;
-  const ctx = modalContext;
-  if (ctx.type === 'sleep') {
-    const val = document.getElementById('inp').value.trim();
-    if (val) data[ctx.key] = val; else delete data[ctx.key];
-  } else if (ctx.type === 'water') {
-    const sel = ctx.selected || document.querySelector('.water-opt.selected');
-    const n = ctx.selected || (sel ? parseInt(sel.textContent) : 0);
-    if (n) data[`water_${ctx.day}`] = n; else delete data[`water_${ctx.day}`];
-  } else if (ctx.type === 'pages') {
-    const val = document.getElementById('inp').value.trim();
-    if (val && parseInt(val) > 0) data[`pages_${ctx.day}`] = parseInt(val);
-    else delete data[`pages_${ctx.day}`];
-  } else if (ctx.type === 'screen') {
-    const val = document.getElementById('inp').value.trim();
-    if (val) data[`screen_${ctx.day}`] = val; else delete data[`screen_${ctx.day}`];
-  } else if (ctx.type === 'mood') {
-    const sel = ctx.selected || document.querySelector('.mood-opt.selected')?.textContent;
-    if (sel) data[`mood_${ctx.day}`] = sel; else delete data[`mood_${ctx.day}`];
+  g+='</div>';
+  // note row
+  g+='<div class="grid-row">';
+  for(let d=1;d<=dim;d++){
+    const v=D[`dn_${d}`]||'';
+    const f=fut(d)?' off':'';
+    g+=`<div class="cell ${v?'gold':''}${f}" onclick="openDiary(${d})">${v?'✓':''}</div>`;
   }
-  saveData(viewYear, viewMonth, data);
-  closeModal();
-  render();
+  g+='</div>';
+  document.getElementById('g-diary').innerHTML=g;
 }
 
-function clearEntry() {
-  if (!modalContext) return;
-  const ctx = modalContext;
-  if (ctx.type === 'sleep') delete data[ctx.key];
-  else if (ctx.type === 'water') delete data[`water_${ctx.day}`];
-  else if (ctx.type === 'pages') delete data[`pages_${ctx.day}`];
-  else if (ctx.type === 'screen') delete data[`screen_${ctx.day}`];
-  else if (ctx.type === 'mood') delete data[`mood_${ctx.day}`];
-  saveData(viewYear, viewMonth, data);
-  closeModal();
-  render();
+// ── HELPERS ──
+function sleepH(down,up){
+  if(!down||!up)return 0;
+  try{
+    const[dh,dm]=down.split(':').map(Number);
+    const[uh,um]=up.split(':').map(Number);
+    let m=(uh*60+um)-(dh*60+dm);
+    if(m<0)m+=1440;
+    return Math.round(m/60*10)/10;
+  }catch{return 0;}
+}
+function toMins(s){
+  if(!s)return 0;
+  const p=s.split(':');
+  if(p.length===2)return parseInt(p[0])*60+parseInt(p[1]);
+  return parseInt(s)*60||0;
+}
+function tog(id,d){D[`${id}_${d}`]=!D[`${id}_${d}`];save();render();}
+
+// ── MODALS ──
+function openModal(title,sub,body,c,hasDel){
+  document.getElementById('mTitle').textContent=title;
+  document.getElementById('mSub').textContent=sub;
+  document.getElementById('mBody').innerHTML=body;
+  document.getElementById('btnDel').style.display=hasDel?'block':'none';
+  ctx=c;
+  document.getElementById('overlay').classList.add('on');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('on');ctx=null;}
+function outsideClose(e){if(e.target===document.getElementById('overlay'))closeModal();}
+
+function openSleep(d,type){
+  const k=type==='down'?`sd_${d}`:`su_${d}`;
+  const v=D[k]||'';
+  const lbl=type==='down'?'Время засыпания':'Время подъёма';
+  openModal(lbl,`${MO[mo]}, ${d}`,
+    `<div class="m-lbl">Время (чч:мм)</div>
+     <input class="m-input" id="inp" type="time" value="${v}">`,
+    {t:'sleep',k},!!v);
+}
+function openWater(d){
+  const c=D[`w_${d}`]||0;
+  let opts='<div class="wpick">';
+  for(let i=1;i<=8;i++) opts+=`<div class="wp${c===i?' on':''}" onclick="selW(${i},this)">${i}</div>`;
+  opts+='</div>';
+  openModal('Вода',`${MO[mo]}, ${d}`,opts,{t:'water',d,sel:c},c>0);
+}
+function selW(n,el){
+  document.querySelectorAll('.wp').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');ctx.sel=n;
+}
+function openPages(d){
+  const v=D[`p_${d}`]||'';
+  openModal('Чтение',`${MO[mo]}, ${d}`,
+    `<div class="m-lbl">Страниц</div>
+     <input class="m-input" id="inp" type="number" min="0" max="999" value="${v}" placeholder="0">`,
+    {t:'pages',d},!!v);
+}
+function openScreen(d){
+  const v=D[`sc_${d}`]||'';
+  openModal('Экранное время',`${MO[mo]}, ${d}`,
+    `<div class="m-lbl">Время (ч:мм)</div>
+     <input class="m-input" id="inp" type="text" value="${v}" placeholder="2:30">`,
+    {t:'screen',d},!!v);
+}
+function openDiary(d){
+  const mood=D[`dm_${d}`]||'';
+  const note=D[`dn_${d}`]||'';
+  let mPick='<div class="m-lbl">Настроение</div><div class="mood-pick">';
+  MOODS.forEach(m=>{ mPick+=`<div class="mp${mood===m?' on':''}" onclick="selMood('${m}',this)">${m}</div>`; });
+  mPick+='</div>';
+  const nField=`<div class="m-lbl">Запись дня</div>
+    <textarea class="m-input" id="noteInp" placeholder="Как прошёл день…">${note}</textarea>`;
+  openModal('Дневник дня',`${MO[mo]}, ${d}`,mPick+nField,{t:'diary',d,mood,note},!!(mood||note));
+}
+function selMood(m,el){
+  document.querySelectorAll('.mp').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');ctx.mood=m;
 }
 
-// ─── SUMMARY ─────────────────────────────────────────────────────────────────
-function renderSummary() {
-  data = loadData(viewYear, viewMonth);
-  const dim = daysInCurrentMonth();
-  const now = new Date();
-  const isNow = viewYear === now.getFullYear() && viewMonth === now.getMonth();
-  const activeDays = isNow ? now.getDate() : dim;
-
-  // Sleep
-  let sleepTotal = 0, sleepCount = 0, sleepGoodDays = 0;
-  for (let d = 1; d <= dim; d++) {
-    const h = getSleepHours(data[`sleep_down_${d}`], data[`sleep_up_${d}`]);
-    if (h > 0) { sleepTotal += h; sleepCount++; if (h >= 7) sleepGoodDays++; }
+function saveEntry(){
+  if(!ctx)return;
+  const c=ctx;
+  if(c.t==='sleep'){
+    const v=document.getElementById('inp').value.trim();
+    if(v)D[c.k]=v;else delete D[c.k];
+  } else if(c.t==='water'){
+    const s=c.sel||0;
+    if(s)D[`w_${c.d}`]=s;else delete D[`w_${c.d}`];
+  } else if(c.t==='pages'){
+    const v=parseInt(document.getElementById('inp').value)||0;
+    if(v>0)D[`p_${c.d}`]=v;else delete D[`p_${c.d}`];
+  } else if(c.t==='screen'){
+    const v=document.getElementById('inp').value.trim();
+    if(v)D[`sc_${c.d}`]=v;else delete D[`sc_${c.d}`];
+  } else if(c.t==='diary'){
+    const m=c.mood||document.querySelector('.mp.on')?.textContent||'';
+    const n=document.getElementById('noteInp').value.trim();
+    if(m)D[`dm_${c.d}`]=m;else delete D[`dm_${c.d}`];
+    if(n)D[`dn_${c.d}`]=n;else delete D[`dn_${c.d}`];
   }
-  const sleepAvg = sleepCount ? Math.round(sleepTotal/sleepCount*10)/10 : 0;
+  save();closeModal();render();
+}
+function delEntry(){
+  if(!ctx)return;const c=ctx;
+  if(c.t==='sleep'){delete D[c.k];}
+  else if(c.t==='water'){delete D[`w_${c.d}`];}
+  else if(c.t==='pages'){delete D[`p_${c.d}`];}
+  else if(c.t==='screen'){delete D[`sc_${c.d}`];}
+  else if(c.t==='diary'){delete D[`dm_${c.d}`];delete D[`dn_${c.d}`];}
+  save();closeModal();render();
+}
 
-  // Habits
-  const habitCounts = {};
-  habits.forEach(h => {
-    let c = 0;
-    for (let d = 1; d <= dim; d++) if (data[`${h.id}_${d}`]) c++;
-    habitCounts[h.id] = c;
-  });
+// ── SUMMARY ──
+function renderSummary(){
+  D=load();
+  const n=new Date();
+  const isCur=yr===n.getFullYear()&&mo===n.getMonth();
+  const dim=new Date(yr,mo+1,0).getDate();
+  const active=isCur?n.getDate():dim;
 
-  // Water
-  let waterDays = 0, waterTotal = 0;
-  for (let d = 1; d <= dim; d++) {
-    const c = data[`water_${d}`] || 0;
-    if (c >= 8) waterDays++;
-    waterTotal += c;
+  let sleepTot=0,sleepCnt=0,sleepGood=0;
+  for(let d=1;d<=dim;d++){
+    const h=sleepH(D[`sd_${d}`],D[`su_${d}`]);
+    if(h>0){sleepTot+=h;sleepCnt++;if(h>=7)sleepGood++;}
   }
+  const sleepAvg=sleepCnt?Math.round(sleepTot/sleepCnt*10)/10:0;
 
-  // Pages
-  let pagesTotal = 0, pagesDays = 0;
-  for (let d = 1; d <= dim; d++) {
-    const p = data[`pages_${d}`] || 0;
-    if (p > 0) { pagesTotal += p; pagesDays++; }
+  const hc={};
+  HABITS.forEach(h=>{let c=0;for(let d=1;d<=dim;d++)if(D[`${h.id}_${d}`])c++;hc[h.id]=c;});
+
+  let wDays=0,wTot=0;
+  for(let d=1;d<=dim;d++){const c=D[`w_${d}`]||0;wTot+=c;if(c>=8)wDays++;}
+
+  let pTot=0,pDays=0;
+  for(let d=1;d<=dim;d++){const v=D[`p_${d}`]||0;if(v>0){pTot+=v;pDays++;}}
+
+  let scTot=0,scCnt=0,scLow=0;
+  for(let d=1;d<=dim;d++){const m=toMins(D[`sc_${d}`]);if(m>0){scTot+=m;scCnt++;if(m<=120)scLow++;}}
+  const scAvg=scCnt?Math.round(scTot/scCnt/60*10)/10:0;
+
+  const mMap={'😞':1,'😕':2,'😐':3,'🙂':4,'😊':5};
+  let mTot=0,mCnt=0,mDist={1:0,2:0,3:0,4:0,5:0};
+  let noteDays=0;
+  for(let d=1;d<=dim;d++){
+    const m=D[`dm_${d}`];if(m&&mMap[m]){mTot+=mMap[m];mCnt++;mDist[mMap[m]]++;}
+    if(D[`dn_${d}`])noteDays++;
   }
+  const mAvg=mCnt?Math.round(mTot/mCnt*10)/10:0;
+  const mEmoji=mAvg>=4.5?'😊':mAvg>=3.5?'🙂':mAvg>=2.5?'😐':mAvg>0?'😕':'—';
 
-  // Screen
-  let screenLowDays = 0, screenTotal = 0, screenCount = 0;
-  for (let d = 1; d <= dim; d++) {
-    const m = parseTimeMins(data[`screen_${d}`]);
-    if (m > 0) { screenTotal += m; screenCount++; if (m <= 120) screenLowDays++; }
-  }
-  const screenAvgH = screenCount ? Math.round(screenTotal/screenCount/60*10)/10 : 0;
-
-  // Mood
-  const moodMap = {'😞':1,'😕':2,'😐':3,'🙂':4,'😊':5};
-  let moodTotal = 0, moodCount = 0, moodDist = {1:0,2:0,3:0,4:0,5:0};
-  for (let d = 1; d <= dim; d++) {
-    const m = data[`mood_${d}`];
-    if (m && moodMap[m]) { moodTotal += moodMap[m]; moodCount++; moodDist[moodMap[m]]++; }
-  }
-  const moodAvg = moodCount ? Math.round(moodTotal/moodCount*10)/10 : 0;
-  const moodEmoji = moodAvg >= 4.5 ? '😊' : moodAvg >= 3.5 ? '🙂' : moodAvg >= 2.5 ? '😐' : moodAvg > 0 ? '😕' : '—';
-
-  // BUILD CARDS
-  const cards = [
-    { label:'Сон · среднее', value: sleepAvg || '—', unit: sleepAvg ? 'ч' : '', sub: `${sleepGoodDays} дней ≥ 7ч · данных: ${sleepCount}`, pct: Math.min(100, sleepAvg/9*100) },
-    { label:'Зарядка', value: habitCounts.charge, unit: 'дней', sub: `из ${activeDays} дней`, pct: habitCounts.charge/activeDays*100 },
-    { label:'Трезвость', value: habitCounts.sober, unit: 'дней', sub: `из ${activeDays} дней`, pct: habitCounts.sober/activeDays*100 },
-    { label:'Тренировки', value: habitCounts.workout, unit: 'раз', sub: `в месяце`, pct: habitCounts.workout/20*100 },
-    { label:'Медитация', value: habitCounts.meditate, unit: 'дней', sub: `из ${activeDays} дней`, pct: habitCounts.meditate/activeDays*100 },
-    { label:'Дневник', value: habitCounts.journal, unit: 'дней', sub: `из ${activeDays} дней`, pct: habitCounts.journal/activeDays*100 },
-    { label:'Вода · норма', value: waterDays, unit: 'дней', sub: `всего стаканов: ${waterTotal}`, pct: waterDays/activeDays*100 },
-    { label:'Чтение · страниц', value: pagesTotal, unit: 'стр', sub: `${pagesDays} дней читал`, pct: Math.min(100, pagesTotal/1000*100) },
-    { label:'Экран · среднее', value: screenAvgH || '—', unit: screenAvgH ? 'ч/д' : '', sub: `до 2ч: ${screenLowDays} дней`, pct: Math.max(0, 100 - (screenAvgH/6*100)) },
-    { label:'Настроение · среднее', value: moodEmoji, unit: moodAvg ? ` ${moodAvg}/5` : '', sub: `${moodCount} оценок`, pct: moodAvg/5*100 },
+  const cards=[
+    {l:'Сон · среднее',v:sleepAvg||'—',u:sleepAvg?'ч':'',s:`${sleepGood} дней ≥7ч`,pct:Math.min(100,sleepAvg/9*100)},
+    {l:'Зарядка',v:hc.charge,u:'дней',s:`из ${active}`,pct:hc.charge/active*100},
+    {l:'Трезвость',v:hc.sober,u:'дней',s:`из ${active}`,pct:hc.sober/active*100},
+    {l:'Тренировки',v:hc.workout,u:'раз',s:'за месяц',pct:hc.workout/20*100},
+    {l:'Медитация',v:hc.meditate,u:'дней',s:`из ${active}`,pct:hc.meditate/active*100},
+    {l:'Вода · норма',v:wDays,u:'дней',s:`стаканов всего: ${wTot}`,pct:wDays/active*100},
+    {l:'Чтение · страниц',v:pTot,u:'стр',s:`${pDays} дней читал`,pct:Math.min(100,pTot/1000*100)},
+    {l:'Экран · среднее',v:scAvg||'—',u:scAvg?'ч/д':'',s:`до 2ч: ${scLow} дней`,pct:Math.max(0,100-scAvg/6*100)},
+    {l:'Настроение · средн.',v:mEmoji,u:mAvg?` ${mAvg}/5`:'',s:`${mCnt} оценок`,pct:mAvg/5*100},
+    {l:'Записей в дневнике',v:noteDays,u:'дней',s:'',pct:noteDays/active*100},
   ];
 
-  const grid = document.getElementById('statsGrid');
-  grid.innerHTML = cards.map(c => `
-    <div class="stat-card">
-      <div class="stat-card-label">${c.label}</div>
-      <div class="stat-card-value">${c.value}<span class="unit"> ${c.unit}</span></div>
-      <div class="stat-card-sub">${c.sub}</div>
-      <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.min(100,Math.max(0,c.pct||0))}%"></div></div>
-    </div>
-  `).join('');
+  document.getElementById('statsGrid').innerHTML=cards.map(c=>`
+    <div class="sc">
+      <div class="sc-lbl">${c.l}</div>
+      <div class="sc-val">${c.v}<span class="u">${c.u}</span></div>
+      <div class="sc-sub">${c.s}</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,Math.max(0,c.pct||0))}%"></div></div>
+    </div>`).join('');
 
-  // EXPORT TEXT
-  const moodNames = ['очень плохо','плохо','нейтрально','хорошо','отлично'];
-  let moodDistStr = Object.entries(moodDist).map(([k,v]) => `${moodNames[k-1]}: ${v} дн.`).join(', ');
+  const mNames=['очень плохо','плохо','нейтрально','хорошо','отлично'];
+  const mDistStr=Object.entries(mDist).map(([k,v])=>`${mNames[k-1]}: ${v} дн.`).join(', ');
 
-  const exportText = `=== ОТЧЁТ ЗА ${MONTHS_RU[viewMonth].toUpperCase()} ${viewYear} ===
-Активных дней в отслеживании: ${activeDays} из ${dim}
+  document.getElementById('exportTxt').textContent=
+`=== ОТЧЁТ ДАНИИЛА · ${MO[mo].toUpperCase()} ${yr} ===
+Дней в отслеживании: ${active} из ${dim}
 
 СОН
-• Средняя продолжительность: ${sleepAvg || 'н/д'} ч
-• Дней с нормальным сном (≥7ч): ${sleepGoodDays}
-• Всего записей: ${sleepCount}
+• Среднее: ${sleepAvg||'н/д'} ч
+• Дней с нормальным сном (≥7ч): ${sleepGood}
+• Всего записей: ${sleepCnt}
 
-ЕЖЕДНЕВНЫЕ ПРИВЫЧКИ
-• Зарядка: ${habitCounts.charge} / ${activeDays} дн.
-• Трезвость: ${habitCounts.sober} / ${activeDays} дн.
-• Тренировки: ${habitCounts.workout} раз
-• Медитация: ${habitCounts.meditate} / ${activeDays} дн.
-• Дневник: ${habitCounts.journal} / ${activeDays} дн.
+ПРИВЫЧКИ
+• Зарядка: ${hc.charge}/${active} дн.
+• Трезвость: ${hc.sober}/${active} дн.
+• Тренировки: ${hc.workout} раз
+• Медитация: ${hc.meditate}/${active} дн.
 
 ВОДА
-• Дней с нормой (≥8 стак.): ${waterDays} / ${activeDays}
-• Всего стаканов за месяц: ${waterTotal}
+• Дней с нормой (≥8 ст.): ${wDays}/${active}
+• Всего стаканов: ${wTot}
 
 ЧТЕНИЕ
-• Всего страниц: ${pagesTotal}
-• Дней читал: ${pagesDays}
+• Страниц за месяц: ${pTot}
+• Дней читал: ${pDays}
 
 ЭКРАННОЕ ВРЕМЯ
-• Среднее в день: ${screenAvgH || 'н/д'} ч
-• Дней в норме (≤2ч): ${screenLowDays}
+• Среднее: ${scAvg||'н/д'} ч/д
+• Дней в норме (≤2ч): ${scLow}
 
-НАСТРОЕНИЕ
-• Средний балл: ${moodAvg || 'н/д'} / 5
-• Распределение: ${moodDistStr}
+ДНЕВНИК
+• Среднее настроение: ${mAvg||'н/д'}/5
+• Распределение: ${mDistStr}
+• Дней с записями: ${noteDays}
 
-ЗАПРОС ДЛЯ АНАЛИЗА:
-Проанализируй данные трекера привычек за ${MONTHS_RU[viewMonth]} ${viewYear}. Оцени динамику и соответствие нормам, выяви закономерности между сном, настроением и активностью, укажи сильные стороны и точки роста. Дай конкретные рекомендации на следующий месяц.`;
-
-  document.getElementById('exportText').textContent = exportText;
+---
+Запрос: Проанализируй данные трекера привычек Даниила за ${MO[mo]} ${yr}. Выяви закономерности между сном, активностью и настроением. Укажи сильные стороны и зоны роста. Дай конкретные рекомендации на следующий месяц.`;
 }
 
-function copyExport() {
-  const text = document.getElementById('exportText').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.querySelector('.export-btn');
-    const orig = btn.textContent;
-    btn.textContent = 'Скопировано ✓';
-    setTimeout(() => btn.textContent = orig, 2000);
+function copyExport(){
+  navigator.clipboard.writeText(document.getElementById('exportTxt').textContent).then(()=>{
+    const b=document.querySelector('.export-btn');
+    b.textContent='Скопировано ✓';
+    setTimeout(()=>b.textContent='Скопировать',2000);
   });
 }
 
-// ─── START ────────────────────────────────────────────────────────────────────
 init();
 </script>
 </body>
